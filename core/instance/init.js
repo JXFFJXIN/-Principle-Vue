@@ -1,3 +1,5 @@
+
+import { constructProxy } from "./proxy.js";
 //声明Jid变量防止dom重复操作
 let Jid = 0;
 
@@ -13,6 +15,10 @@ export function initMixin(Jue){
         vm._isJue = true;
         //初始化步骤
         //1. data属性
+        if(option && option.data){
+            //定义虚拟对象_data属性
+            vm._data = constructProxy(vm,option,data,"");
+        }
         //2. created方法
         //3. methods属性
         //4. computed属性
