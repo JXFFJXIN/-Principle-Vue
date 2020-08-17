@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="test">
+        <div class="content">
+            {{content}}
+        </div>
+        <div class="description">
+            {{description}}
+        </div>
+        <div v-for="(temp,index) in list" :key="index">
+            {{temp.name}}-{{temp.age}}
+        </div>
+        <div class="obj">
+            {{obj.x}}
+            {{obj.y}}
+        </div>
+    </div>
+    <script type="module" >
+        import Jue from './core/index.js';
+        window.test = new Jue({
+            el:'#test',
+            data:{
+                content:"Jxff",
+                description:"Jxff say hi",
+                list:[
+                    {
+                        name:"JJJ",
+                        age:23,
+                    },
+                    {
+                        name:"XXX",
+                        age:24,
+                    }
+                ],
+                obj:{
+                    x:{
+                        x1:1,
+                        x2:3,
+                    },
+                    y:2,
+                }
+            }
+        })
+    </script>
+</body>
+</html>

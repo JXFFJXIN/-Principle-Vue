@@ -17,7 +17,7 @@ export function initMixin(Jue){
         //1. data属性
         if(option && option.data){
             //定义虚拟对象_data属性
-            vm._data = constructProxy(vm,option,data,"");
+            vm._data = constructProxy(vm,option.data,"");
         }
         //2. created方法
         //3. methods属性
