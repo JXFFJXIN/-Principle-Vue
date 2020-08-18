@@ -1,11 +1,49 @@
+//导入工具函数getValue，获得对象属性值
+import { getValue } from "../util/ObjectUtil.js";
 //通过模板，找到哪些节点用到了这个模板
 let template2Vnode = new Map();
 //通过节点，找到这个节点下有哪些模板
 let vnode2Template = new Map();
 //主程序
+//导出renderMixin函数为Jue原型添加_render方法
+// function renderMixin
+// (Jue)
+// Jue.prototype._render=function(){renderNode(this,this._vnode);}
+export function renderMixin(Jue){
+    Jue.prototype._render=function(){
+        renderNode(this,this._vnode);
+    }
+}
+//渲染入口函数
+// function renderNode
+// (vm,vnode)
+// result = result.replace("{{"+templates[i]+"}}",templateValue);
+export function renderNode(vm,vnode){
+    if(vnode.nodeType == 3){
+        //通过虚拟Dom寻找到模板变量
+        let templates = vnode2Template.get(vnode);
+        if(templates){
+            let result = vnode.text;
+            for(let i = 0 ; i < templates.length ; i ++){
+                let templateValue = getTemplateValue([vm._data,vnode.env],templates[i])
+                console.log(templateValue)
+                if(templateValue){
+                    //渲染，进行vnode.text以及vnode.elm.nodeValue的内容替换
+                    result = result.replace("{{"+templates[i]+"}}",templateValue);
+                }
+            }
+            vnode.elm.nodeValue = result;
+        }
+    }else{
+        for(let i = 0; i<vnode.children.length;i++){
+            //递归
+            renderNode(vm,vnode.children[i])
+        }
+    }
+}
+//预渲染，将文本节点进行分析，得到模板字符
 //function prepareRender
 // (vm,vnode)
-//预渲染，将文本节点进行分析，得到模板字符
 export function prepareRender(vm,vnode){
     if(vnode == null){
         return;
@@ -42,7 +80,7 @@ function analysisTemplateString(vnode){
 function setTemplate2Vnode(template,vnode){
     //获取模板字符串中的字符串名字
     let templateName = getTemplateName(template);
-    var vnodeSet = template2Vnode.get(templateName);
+    let vnodeSet = template2Vnode.get(templateName);
     //判断模板名字是否在template2Vnode变量中
     if(vnodeSet){
         //如果有，就放入vnodeSet变量中，达到映射的一端
@@ -77,6 +115,17 @@ function getTemplateName(template){
     }else{
         return template;
     }
+}
+//获取模板的内容
+function getTemplateValue(objs,templateName){
+    //当前节点的参数可以来自于Jue对象也可以来自于父级节点
+    for(let i = 0;i<objs.length;i++){
+        let temp = getValue(objs[i],templateName);
+        if(temp != null){
+            return temp;
+        }
+    }
+    return null;
 }
 //导出getTemplate2Vnode
 export function getTemplate2Vnode(){
