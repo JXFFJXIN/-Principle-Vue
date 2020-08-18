@@ -1,4 +1,5 @@
 import VNode from "../vdom/vnode.js";
+import { prepareRender,getVnode2Template,getTemplate2Vnode } from "./render.js";
 //导入自己定制的虚拟节点
 //主程序
 //初始化挂载函数
@@ -18,6 +19,9 @@ export function mount(vm, elm) {
     //进行挂载
     vm._vnode = constructVNode(vm, elm, null)
     //预备渲染（建立渲染索引，通过模板找VNode，通过VNode找模板）
+    prepareRender(vm,vm._vnode);
+    console.log(getVnode2Template());
+    console.log(getTemplate2Vnode());
 }
 
 //工具程序
