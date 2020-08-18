@@ -1,5 +1,6 @@
 import VNode from "../vdom/vnode.js";
 import { prepareRender,getVnode2Template,getTemplate2Vnode } from "./render.js";
+import { vmodel } from "./grammer/vmodel.js"
 //导入自己定制的虚拟节点
 //主程序
 //初始化挂载函数
@@ -30,6 +31,7 @@ export function mount(vm, elm) {
 //(vm, elm, parent)
 // return vnode
 function constructVNode(vm, elm, parent) {
+    analysisAttr(vm,elm,parent);
     //进行深度优先搜索
     //定制dom的各个属性
     let vnode = null;
@@ -64,5 +66,14 @@ function getNodeText(elm){
         return elm.nodeValue;
     }else{
         return "";
+    }
+}
+//分析数组
+function analysisAttr(vm,elm,parent){
+    if(elm.nodeType == 1){
+        let attrName = elm.getAttributeNames("v-model");
+        if(attrName.indexOf("v-model")>-1){
+            vmodel(vm,elm,elm.getAttribute("v-model"))
+        }
     }
 }
