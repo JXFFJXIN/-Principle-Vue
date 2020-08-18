@@ -1,4 +1,4 @@
-
+import { mount } from "./mount.js";
 import { constructProxy } from "./proxy.js";
 //声明Jid变量防止dom重复操作
 let Jid = 0;
@@ -23,6 +23,10 @@ export function initMixin(Jue){
         //3. methods属性
         //4. computed属性
         //5. 初始化el并进行挂载
+        if(option&&option.el){
+            let rootDom = document.getElementById(option.el);
+            mount(vm,rootDom);
+        }
     }
 }
 
