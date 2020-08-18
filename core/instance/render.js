@@ -59,6 +59,19 @@ export function prepareRender(vm,vnode){
         }
     }
 }
+//获取更新数据并重新渲染
+// function renderData
+// (vm,data)
+// renderNode(vm,vnodes[i]);
+export function renderData(vm,data){
+    //通过数据的改变获取虚拟dom
+    let vnodes = template2Vnode.get(data);
+    if(vnodes != null){
+        for(var i = 0;i < NodeList.length ;i ++){
+            renderNode(vm,vnodes[i]);
+        }
+    }
+}
 //工具程序
 //正则匹配模板字符串
 //function analysisTemplateString

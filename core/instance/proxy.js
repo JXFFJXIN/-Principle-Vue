@@ -1,3 +1,5 @@
+//加入renderData方法进行对数据改变的监控
+import { renderData } from "./render.js";
 //主程序区域
 //定义虚拟dom和dom的代理proxy
 //创建对象的代理机制
@@ -14,6 +16,7 @@ function constructObjectProxy(vm, obj, namespace) {
                 return obj[prop];
             },
             set: function (value) {
+                renderData(vm,getNameSpace(namespace,prop));
                 console.log(getNameSpace(namespace, prop))
                 obj[value] = value;
             }
@@ -25,6 +28,7 @@ function constructObjectProxy(vm, obj, namespace) {
                 return obj[prop];
             },
             set: function (value) {
+                renderData(vm,getNameSpace(namespace,prop));
                 console.log(getNameSpace(namespace, prop))
                 obj[prop] = value;
             }
@@ -122,7 +126,8 @@ function defArrayFunc(obj, func, namespace, vm) {
             let original = arrayProto[func];
             //应用到返回变量result传递给初始化函数的value属性中
             const result = original.apply(this, args);
-            console.log(getNameSpace(namespace, ""));
+            //通过更改的属性值来找到对应的节点
+            renderData(vm,getNameSpace(namespace,prop));
             return result;
         }
     })
