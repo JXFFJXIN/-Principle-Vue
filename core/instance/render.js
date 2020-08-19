@@ -2,6 +2,7 @@
 import {
     getValue
 } from "../util/ObjectUtil.js";
+import { vforInit } from "./grammer/vfor.js";
 //通过模板，找到哪些节点用到了这个模板
 let template2Vnode = new Map();
 //通过节点，找到这个节点下有哪些模板
@@ -95,6 +96,10 @@ function analysisAttr(vm,vnode){
     if(attrNames.indexOf("v-model")>-1){
         setTemplate2Vnode(vnode.elm.getAttribute("v-model"),vnode);
         setVnode2Template(vnode.elm.getAttribute("v-model"),vnode);
+    }
+    if(attrNames.indexOf("v-for")>-1){
+        //标签名字中是否存在v-for属性
+        vforInit(vm,elm,parent,elm.getAttribute("v-for"));
     }
 }
 
