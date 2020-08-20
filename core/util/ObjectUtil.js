@@ -52,7 +52,14 @@ export function mergeAttr(obj1,obj2){
     }
     return result;
 }
+//easyClone
+function easyClone(obj){
+    //无法合并代理对象，vm._data,
+    JSON.parse(JSON.stringify(obj));
+}
 //经典的克隆方法
+//1. 分情况，数组克隆和对象克隆以及其他
+//2. 数组克隆和对象克隆分别递归赋值
 function clone(obj){
     if(obj instanceof Array){
         return cloneArray(obj);
