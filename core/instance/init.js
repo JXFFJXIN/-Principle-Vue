@@ -21,6 +21,12 @@ export function initMixin(Jue){
         }
         //2. created方法
         //3. methods属性
+        if(option && option.methods){
+            vm._methods = option.methods;
+            for(let temp in option.methods){
+                vm[temp] = option.methods[temp];
+            }
+        }
         //4. computed属性
         //5. 初始化el并进行挂载
         if(option&&option.el){

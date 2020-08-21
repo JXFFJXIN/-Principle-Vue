@@ -18,6 +18,9 @@ import {
 import {
     checkVBind
 } from "./grammer/vbind.js";
+import {
+    checkVOn
+} from "./grammer/von.js";
 //主程序
 //初始化挂载函数
 //function initMount
@@ -76,6 +79,7 @@ function constructVNode(vm, elm, parent) {
         }
     }
     checkVBind(vm,vnode);
+    checkVOn(vm,vnode);
     let childs = vnode.nodeType == 0 ? vnode.parent.elm.childNodes:vnode.elm.childNodes;
     let len = vnode.nodeType == 0 ?vnode.parent.elm.childNodes.length : vnode.elm.childNodes.length;
     for (let i = 0; i < len; i++) {
