@@ -66,13 +66,17 @@ export function prepareRender(vm, vnode) {
         //文字节点处理
         analysisTemplateString(vnode);
     }
+    if(vnode.nodeType == 0){
+        setTemplate2Vnode(vnode.data,vnode);
+        setVnode2Template(vnode.data,vnode);
+    }
     analysisAttr(vm,vnode);
-    if (vnode.nodeType == 1) {
+    // if (vnode.nodeType == 1) {
         for (let i = 0; i < vnode.children.length; i++) {
             //递归
             prepareRender(vm, vnode.children[i]);
         }
-    }
+    // }
 }
 //获取更新数据并重新渲染
 // function renderData
@@ -82,10 +86,19 @@ export function renderData(vm, data) {
     //通过数据的改变获取虚拟dom
     let vnodes = template2Vnode.get(data);
     if (vnodes != null) {
-        for (var i = 0; i < NodeList.length; i++) {
+        for (var i = 0; i < vnodes.length; i++) {
             renderNode(vm, vnodes[i]);
         }
     }
+}
+//根据模板寻找节点
+export function getVNodeByTemplate(template){
+    return template2Vnode.get(template);
+}
+//清除映射
+export function clearMap(){
+    template2Vnode.clear();
+    vnode2Template.clear();
 }
 //工具程序
 function analysisAttr(vm,vnode){

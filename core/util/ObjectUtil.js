@@ -84,3 +84,9 @@ function cloneArray(obj){
     }
     return result;
 }
+//getEnvAttr
+export function getEnvAttr(vm,vnode){
+    let result = mergeAttr(vm._data,vnode.env);
+    result = mergeAttrr(result,vm._computed);
+    return result;
+}

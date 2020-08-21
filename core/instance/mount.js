@@ -2,7 +2,9 @@ import VNode from "../vdom/vnode.js";
 import {
     prepareRender,
     getVnode2Template,
-    getTemplate2Vnode
+    getTemplate2Vnode,
+    getVNodeByTemplate,
+    clearMap,
 } from "./render.js";
 import {
     vmodel
@@ -13,7 +15,9 @@ import {
 import {
     mergeAttr
 } from "../util/ObjectUtil.js";
-//导入自己定制的虚拟节点
+import {
+    checkVBind
+} from "./grammer/vbind.js";
 //主程序
 //初始化挂载函数
 //function initMount
@@ -36,7 +40,18 @@ export function mount(vm, elm) {
     console.log(getVnode2Template());
     console.log(getTemplate2Vnode());
 }
-
+//数组重新渲染函数
+export function rebuild(vm,template){
+    let virtualNode = getVNodeByTemplate(template);
+    for(let i = 0 ; i < virtualNode.length ; i ++){
+        virtualNode[i].parent.elm.innerHTML = "";
+        virtualNode[i].parent.elm.appendChild(virtualNode[i].elm);
+        let result = constructVNode(vm,virtualNode[i].elm,virtualNode[i].parent)
+        virtualNode[i].parent.children = [result];
+        clearMap();
+        prepareRender(vm,vm._vnode);
+    }
+}
 //工具程序
 //虚拟节点构造函数
 //function constructVNode
@@ -60,9 +75,10 @@ function constructVNode(vm, elm, parent) {
             vnode.env = mergeAttr(vnode.env,parent?parent.env:{});
         }
     }
-    console.log(vnode);
-    let childs = vnode.elm.childNodes;
-    for (let i = 0; i < childs.length; i++) {
+    checkVBind(vm,vnode);
+    let childs = vnode.nodeType == 0 ? vnode.parent.elm.childNodes:vnode.elm.childNodes;
+    let len = vnode.nodeType == 0 ?vnode.parent.elm.childNodes.length : vnode.elm.childNodes.length;
+    for (let i = 0; i < len; i++) {
         let childNodes = constructVNode(vm, childs[i], vnode);
         //深度优先搜索  
         if (childNodes instanceof VNode) {
@@ -90,7 +106,7 @@ function getNodeText(elm) {
 //分析数组
 function analysisAttr(vm, elm, parent) {
     if (elm.nodeType == 1) {
-        let attrName = elm.getAttributeNames("v-model");
+        let attrName = elm.getAttributeNames();
         if (attrName.indexOf("v-model") > -1) {
             vmodel(vm, elm, elm.getAttribute("v-model"))
         }

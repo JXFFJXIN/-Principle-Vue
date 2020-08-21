@@ -1,5 +1,7 @@
 //加入renderData方法进行对数据改变的监控
 import { renderData } from "./render.js";
+//加入重新渲染的函数
+import { rebuild } from "./mount.js";
 //主程序区域
 //定义虚拟dom和dom的代理proxy
 //创建对象的代理机制
@@ -16,9 +18,9 @@ function constructObjectProxy(vm, obj, namespace) {
                 return obj[prop];
             },
             set: function (value) {
-                renderData(vm,getNameSpace(namespace,prop));
                 console.log(getNameSpace(namespace, prop))
                 obj[value] = value;
+                renderData(vm,getNameSpace(namespace,prop));
             }
         });
         //给虚拟dom创建代理
@@ -28,9 +30,10 @@ function constructObjectProxy(vm, obj, namespace) {
                 return obj[prop];
             },
             set: function (value) {
-                renderData(vm,getNameSpace(namespace,prop));
                 console.log(getNameSpace(namespace, prop))
                 obj[prop] = value;
+                renderData(vm,getNameSpace(namespace,prop));
+
             }
         });
         if (obj[prop] instanceof Object) {
@@ -62,6 +65,8 @@ export function constructProxy(vm, obj, namespace) {
             //返回值的每一项都进行递归
             proxyObj[i] = constructProxy(vm,obj[i],namespace)
         }
+        proxyObj = proxyArray(vm,obj,namespace);
+        //进行数组代理proxyArray
     } else if (obj instanceof Object) {
         //判断对象是否是对象
         proxyObj = constructObjectProxy(vm, obj, namespace);
@@ -126,8 +131,10 @@ function defArrayFunc(obj, func, namespace, vm) {
             let original = arrayProto[func];
             //应用到返回变量result传递给初始化函数的value属性中
             const result = original.apply(this, args);
+            //根据更改数组找到对应的节点
+            rebuild(vm,getNameSpace(namespace,""));
             //通过更改的属性值来找到对应的节点
-            renderData(vm,getNameSpace(namespace,prop));
+            renderData(vm,getNameSpace(namespace,""));
             return result;
         }
     })
