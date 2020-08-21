@@ -6,7 +6,13 @@ import { renderMixin } from "./render.js"
 //初始化option目标，对Jue进行配置
 function Jue(option){
     this._init(option);
+    if(this._created != null){
+        this._created.call(this);
+    }
     this._render(option);
+    if(this._computed != null){
+        this._computed.call(this)
+    }
 }
 //混合初始化方法进入Jue对象
 initMixin(Jue);

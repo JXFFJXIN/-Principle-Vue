@@ -20,6 +20,9 @@ export function initMixin(Jue){
             vm._data = constructProxy(vm,option.data,"");
         }
         //2. created方法
+        if(option && option.created){
+            vm._created = option.created;
+        }
         //3. methods属性
         if(option && option.methods){
             vm._methods = option.methods;
@@ -28,6 +31,9 @@ export function initMixin(Jue){
             }
         }
         //4. computed属性
+        if(option && option.computed){
+            vm._computed = option.computed;
+        }
         //5. 初始化el并进行挂载
         if(option&&option.el){
             let rootDom = document.getElementById(option.el);
